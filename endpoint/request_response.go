@@ -1,10 +1,10 @@
 package endpoint
 
-import "github.com/rosspatil/go-kit-example/models"
+import "github.com/rosspatil/go-kit-example/pb"
 
 // RegisterRequest - ...
 type RegisterRequest struct {
-	Employee models.Employee `json:"employee,omitempty"`
+	Employee pb.Employee `json:"employee,omitempty"`
 }
 
 // RegisterResponse - ...
@@ -36,6 +36,6 @@ type GetRequest struct {
 
 // GetResponse - ...
 type GetResponse struct {
-	Error    error           `json:"error,omitempty"`
-	Employee models.Employee `json:"employee,omitempty"`
+	Error    error       `json:"error,omitempty"`
+	Employee pb.Employee `json:"employee,omitempty"`
 }

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package pb;
+
+service service {
+  rpc GetByID(GetRequest) returns (GetResponse) {}
+  rpc UpdateEmail(UpdateEmailRequest) returns (ErrorOnlyResponse) {}
+  rpc Register(RegisterRequest) returns (RegisterResponse) {}
+  rpc Delete(DeleteRequest) returns (ErrorOnlyResponse) {}
+}
+
+message GetRequest { string id = 1; }
+message DeleteRequest { string id = 1; }
+
+message RegisterRequest { Employee employee = 1; }
+message RegisterResponse {
+  string id = 1;
+  Error error = 2;
+}
+message UpdateEmailRequest {
+  string id = 1;
+  string email = 2;
+}
+
+message ErrorOnlyResponse { Error error = 1; }
+
+message GetResponse {
+  Employee employee = 1;
+  Error error = 2;
+}
+
+message Error { string error = 1; }
+
+message Employee {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  Address address = 4;
+}
+
+message Address {
+  string city = 1;
+  string pincode = 2;
+}

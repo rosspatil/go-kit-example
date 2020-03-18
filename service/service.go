@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/rosspatil/go-kit-example/models"
+	"github.com/rosspatil/go-kit-example/pb"
 	"github.com/rosspatil/go-kit-example/storage"
 )
 
@@ -26,7 +26,7 @@ func NewService() *Service {
 }
 
 // RegisterEmployee -...
-func (s *Service) RegisterEmployee(ctx context.Context, employee models.Employee) (string, error) {
+func (s *Service) RegisterEmployee(ctx context.Context, employee pb.Employee) (string, error) {
 	return storage.GetClient().Create(ctx, employee)
 }
 
@@ -41,7 +41,7 @@ func (s *Service) UpdateEmail(ctx context.Context, ID, email string) error {
 }
 
 // GetEmployeeDetails -...
-func (s *Service) GetEmployeeDetails(ctx context.Context, ID string) (*models.Employee, error) {
+func (s *Service) GetEmployeeDetails(ctx context.Context, ID string) (*pb.Employee, error) {
 	return storage.GetClient().Get(ctx, ID)
 }
 

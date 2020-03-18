@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/rosspatil/go-kit-example/models"
+	"github.com/rosspatil/go-kit-example/pb"
 	"github.com/rosspatil/go-kit-example/service"
 )
 
@@ -39,7 +39,7 @@ func createGetByIDEndpoint(service service.Service) endpoint.Endpoint {
 		req := request.(GetRequest)
 		e, err := service.GetEmployeeDetails(ctx, req.ID)
 		if err != nil {
-			return GetResponse{err, models.Employee{}}, nil
+			return GetResponse{err, pb.Employee{}}, nil
 		}
 		return GetResponse{nil, *e}, nil
 	}

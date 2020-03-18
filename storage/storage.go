@@ -5,14 +5,14 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
-	"github.com/rosspatil/go-kit-example/models"
+	"github.com/rosspatil/go-kit-example/pb"
 )
 
 // Iface - storage interface
 type Iface interface {
-	Get(ctx context.Context, ID string) (*models.Employee, error)
-	Create(ctx context.Context, employee models.Employee) (string, error)
-	Update(ctx context.Context, ID string, employee models.Employee) error
+	Get(ctx context.Context, ID string) (*pb.Employee, error)
+	Create(ctx context.Context, employee pb.Employee) (string, error)
+	Update(ctx context.Context, ID string, employee pb.Employee) error
 	Delete(ctx context.Context, ID string) error
 }
 
@@ -32,16 +32,16 @@ func GetClient() *Storage {
 	return client
 }
 
-func (s *Storage) Create(ctx context.Context, employee models.Employee) (string, error) {
-	employee.ID = uuid.New().String()
-	err := s.db.Set(ctx, employee.ID, employee)
+func (s *Storage) Create(ctx context.Context, employee pb.Employee) (string, error) {
+	employee.Id = uuid.New().String()
+	err := s.db.Set(ctx, employee.Id, employee)
 	if err != nil {
 		return "", err
 	}
-	return employee.ID, nil
+	return employee.Id, nil
 }
 
-func (s *Storage) Update(ctx context.Context, ID string, employee models.Employee) error {
+func (s *Storage) Update(ctx context.Context, ID string, employee pb.Employee) error {
 	err := s.db.Set(ctx, ID, employee)
 	if err != nil {
 		return err
@@ -57,11 +57,11 @@ func (s *Storage) Delete(ctx context.Context, ID string) error {
 	return nil
 }
 
-func (s *Storage) Get(ctx context.Context, ID string) (*models.Employee, error) {
+func (s *Storage) Get(ctx context.Context, ID string) (*pb.Employee, error) {
 	data, err := s.db.Get(ctx, ID)
 	if err != nil {
 		return nil, err
 	}
-	employee := data.(models.Employee)
+	employee := data.(pb.Employee)
 	return &employee, nil
 }
