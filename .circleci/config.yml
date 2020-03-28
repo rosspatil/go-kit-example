@@ -3,10 +3,10 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build:
+  Checkout&Build:
     docker:
       # specify the version
-      - image: circleci/golang:1.13
+      - image: circleci/golang:1.13-alpine
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -23,4 +23,9 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: go build
-     # - run: go test -v ./...
+      # - run: go test -v ./...
+workflows:
+  BuildWorkFlow:
+    jobs:
+      - Checkout&Build
+  version: 2
