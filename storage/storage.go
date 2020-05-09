@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
+	"github.com/opentracing/opentracing-go"
 	"github.com/rosspatil/go-kit-example/pb"
 )
 
@@ -58,6 +59,8 @@ func (s *Storage) Delete(ctx context.Context, ID string) error {
 }
 
 func (s *Storage) Get(ctx context.Context, ID string) (*pb.Employee, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "Get DB")
+	defer span.Finish()
 	data, err := s.db.Get(ctx, ID)
 	if err != nil {
 		return nil, err

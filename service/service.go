@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 
+	"github.com/opentracing/opentracing-go"
+
 	"github.com/rosspatil/go-kit-example/pb"
 	"github.com/rosspatil/go-kit-example/storage"
 )
@@ -42,6 +44,8 @@ func (s *Service) UpdateEmail(ctx context.Context, ID, email string) error {
 
 // GetEmployeeDetails -...
 func (s *Service) GetEmployeeDetails(ctx context.Context, ID string) (*pb.Employee, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "GetEmployeeDetails")
+	defer span.Finish()
 	return storage.GetClient().Get(ctx, ID)
 }
 

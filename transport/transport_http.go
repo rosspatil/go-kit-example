@@ -5,6 +5,11 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/opentracing/opentracing-go"
+
+	"github.com/go-kit/kit/log"
+	kitopentracing "github.com/go-kit/kit/tracing/opentracing"
+
 	"github.com/gin-gonic/gin"
 	kithttp "github.com/go-kit/kit/transport/http"
 	endpoint "github.com/rosspatil/go-kit-example/endpoint"
@@ -14,11 +19,18 @@ import (
 func NewHTTP(e endpoint.Endpoint) *gin.Engine {
 	g := gin.Default()
 	g.POST("/", func(c *gin.Context) {
-		kithttp.NewServer(e.Register, decodeRegisterRequest, encodeRegisterResponse).ServeHTTP(c.Writer, c.Request)
+		kithttp.NewServer(e.Register,
+			decodeRegisterRequest,
+			encodeRegisterResponse).ServeHTTP(c.Writer, c.Request)
 	})
 	g.GET("/", func(c *gin.Context) {
-		kithttp.NewServer(e.GetByID, decodeGetByIDRequest, encodeGetByIDResponse).ServeHTTP(c.Writer, c.Request)
+		kithttp.NewServer(e.GetByID,
+			decodeGetByIDRequest,
+			encodeGetByIDResponse,
+			kithttp.ServerBefore(kitopentracing.HTTPToContext(opentracing.GlobalTracer(), "Get", log.NewNopLogger())),
+		).ServeHTTP(c.Writer, c.Request)
 	})
+
 	g.DELETE("/", func(c *gin.Context) {
 		kithttp.NewServer(e.Delete, decodeDeleteRequest, encodeErrorOnlyResponse).ServeHTTP(c.Writer, c.Request)
 	})

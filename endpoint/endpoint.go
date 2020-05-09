@@ -3,7 +3,12 @@ package endpoint
 import (
 	"context"
 
+	"github.com/opentracing/opentracing-go"
+
+	"github.com/go-kit/kit/circuitbreaker"
 	"github.com/go-kit/kit/endpoint"
+	kitopentracing "github.com/go-kit/kit/tracing/opentracing"
+	cb "github.com/rosspatil/go-kit-example/circuitbreaker"
 	"github.com/rosspatil/go-kit-example/pb"
 	"github.com/rosspatil/go-kit-example/service"
 )
@@ -18,9 +23,10 @@ type Endpoint struct {
 
 // CreateEndPoint - ...
 func CreateEndPoint(service service.Service) Endpoint {
+	middleWare := circuitbreaker.Gobreaker(cb.Cb)
 	return Endpoint{
-		Register:    createRegisterEndPoint(service),
-		GetByID:     createGetByIDEndpoint(service),
+		Register:    endpoint.Chain(middleWare, kitopentracing.TraceServer(opentracing.GlobalTracer(), "createRegisterEndPoint"))(createRegisterEndPoint(service)),
+		GetByID:     endpoint.Chain(middleWare, kitopentracing.TraceServer(opentracing.GlobalTracer(), "createGetByIDEndpoint"))(createGetByIDEndpoint(service)),
 		UpdateEmail: createUpdateEmailEndpoint(service),
 		Delete:      createDeleteEndpoint(service),
 	}
@@ -39,7 +45,7 @@ func createGetByIDEndpoint(service service.Service) endpoint.Endpoint {
 		req := request.(GetRequest)
 		e, err := service.GetEmployeeDetails(ctx, req.ID)
 		if err != nil {
-			return GetResponse{err, pb.Employee{}}, nil
+			return GetResponse{err, pb.Employee{}}, err
 		}
 		return GetResponse{nil, *e}, nil
 	}
