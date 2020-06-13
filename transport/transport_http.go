@@ -3,6 +3,8 @@ package transport
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/opentracing/opentracing-go"
@@ -18,12 +20,26 @@ import (
 // NewHTTP - ...
 func NewHTTP(e endpoint.Endpoint) *gin.Engine {
 	g := gin.Default()
+
+	g.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"message": "example is up"})
+	})
 	g.POST("/", func(c *gin.Context) {
+		for k, v := range c.Request.Header {
+			fmt.Println(k, v, "\t\t----------")
+		}
+
+		ba, _ := ioutil.ReadAll(c.Request.Body)
+		fmt.Println("BODY --->", string(ba))
+		c.JSON(http.StatusOK, gin.H{"message": "success"})
+	})
+	r := g.Group("employee")
+	r.POST("/", func(c *gin.Context) {
 		kithttp.NewServer(e.Register,
 			decodeRegisterRequest,
 			encodeRegisterResponse).ServeHTTP(c.Writer, c.Request)
 	})
-	g.GET("/", func(c *gin.Context) {
+	r.GET("/", func(c *gin.Context) {
 		kithttp.NewServer(e.GetByID,
 			decodeGetByIDRequest,
 			encodeGetByIDResponse,
@@ -31,10 +47,10 @@ func NewHTTP(e endpoint.Endpoint) *gin.Engine {
 		).ServeHTTP(c.Writer, c.Request)
 	})
 
-	g.DELETE("/", func(c *gin.Context) {
+	r.DELETE("/", func(c *gin.Context) {
 		kithttp.NewServer(e.Delete, decodeDeleteRequest, encodeErrorOnlyResponse).ServeHTTP(c.Writer, c.Request)
 	})
-	g.PUT("/", func(c *gin.Context) {
+	r.PUT("/", func(c *gin.Context) {
 		kithttp.NewServer(e.UpdateEmail, decodeUpdateEmailRequest, encodeErrorOnlyResponse).ServeHTTP(c.Writer, c.Request)
 	})
 	return g
