@@ -30,6 +30,7 @@ func init() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	tracer := zipkinot.Wrap(nativeTracer)
 	opentracing.InitGlobalTracer(tracer)
 }
@@ -42,7 +43,7 @@ func main() {
 	e := endpoint.CreateEndPoint(*s)
 	go func() {
 		g := transport.NewHTTP(e)
-		g.Run(":8090")
+		g.Run(":8080")
 		wg.Done()
 	}()
 	go func() {
@@ -60,6 +61,9 @@ func main() {
 
 		}
 		wg.Done()
+
 	}()
+
 	wg.Wait()
+
 }
