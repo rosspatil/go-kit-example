@@ -26,6 +26,7 @@ type Storage struct {
 var client *Storage
 var once sync.Once
 
+// GetClient -
 func GetClient() *Storage {
 	once.Do(func() {
 		client = &Storage{db: NewClient()}
@@ -33,6 +34,7 @@ func GetClient() *Storage {
 	return client
 }
 
+// Create ...
 func (s *Storage) Create(ctx context.Context, employee pb.Employee) (string, error) {
 	employee.Id = uuid.New().String()
 	err := s.db.Set(ctx, employee.Id, employee)
@@ -42,6 +44,7 @@ func (s *Storage) Create(ctx context.Context, employee pb.Employee) (string, err
 	return employee.Id, nil
 }
 
+// Update ...
 func (s *Storage) Update(ctx context.Context, ID string, employee pb.Employee) error {
 	err := s.db.Set(ctx, ID, employee)
 	if err != nil {
@@ -50,6 +53,7 @@ func (s *Storage) Update(ctx context.Context, ID string, employee pb.Employee) e
 	return nil
 }
 
+// Delete ...
 func (s *Storage) Delete(ctx context.Context, ID string) error {
 	err := s.db.Delete(ctx, ID)
 	if err != nil {
@@ -58,6 +62,7 @@ func (s *Storage) Delete(ctx context.Context, ID string) error {
 	return nil
 }
 
+// Get ...
 func (s *Storage) Get(ctx context.Context, ID string) (*pb.Employee, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "Get DB")
 	defer span.Finish()

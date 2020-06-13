@@ -15,6 +15,7 @@ type grpcHandlers struct {
 	DeleteHandler      grpc.Handler
 }
 
+// NewGRPC -
 func NewGRPC(e endpoint.Endpoint) pb.ServiceServer {
 	return grpcHandlers{
 		GetByIDHandler:     grpc.NewServer(e.GetByID, decodeGetByIDRequestGRPC, encodeGetByIDResponseGRPC),
