@@ -17,6 +17,7 @@ import (
 )
 
 var (
+	concurrency        = 2
 	zipkinHTTPEndpoint = "http://localhost:9411/api/v2/spans"
 )
 
@@ -30,26 +31,26 @@ func init() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	tracer := zipkinot.Wrap(nativeTracer)
 	opentracing.InitGlobalTracer(tracer)
 }
 
 func main() {
-
 	wg := sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(concurrency)
 	s := service.NewService()
 	e := endpoint.CreateEndPoint(*s)
 	go func() {
 		g := transport.NewHTTP(e)
-		g.Run(":8080")
+		err := g.Run(":8080")
+		if err != nil {
+			log.Fatal(err)
+		}
 		wg.Done()
 	}()
 	go func() {
-
 		g1 := transport.NewGRPC(e)
-		listener, err := net.Listen("tcp", ":8091")
+		listener, err := net.Listen("tcp", "127.0.0.1:8091")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -58,12 +59,8 @@ func main() {
 		err = server.Serve(listener)
 		if err != nil {
 			log.Fatal(err)
-
 		}
 		wg.Done()
-
 	}()
-
 	wg.Wait()
-
 }
