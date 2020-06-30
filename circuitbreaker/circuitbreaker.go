@@ -11,7 +11,7 @@ import (
 var Cb *gobreaker.CircuitBreaker
 
 const (
-	interval = 30
+	interval = 20
 )
 
 func init() {
