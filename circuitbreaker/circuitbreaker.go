@@ -7,7 +7,6 @@ import (
 	"github.com/sony/gobreaker"
 )
 
-// Cb -
 var Cb *gobreaker.CircuitBreaker
 
 const (
