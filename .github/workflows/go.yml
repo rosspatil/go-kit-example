@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    
+      with:
+        ref: ${{ github.ref }}    
     - name: Dump GitHub context
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
@@ -16,4 +17,4 @@ jobs:
     - name: Dump job context
       env:
         JOB_CONTEXT: ${{ toJson(job) }}
-        
+      run: echo "$JOB_CONTEXT"
