@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
       with:
-        ref: ${{ github.ref }}    
+        ref: ${{ github.head_ref }}    
     - name: Dump GitHub context
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
