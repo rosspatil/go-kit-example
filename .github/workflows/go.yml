@@ -9,7 +9,7 @@ on:
       branch:
         description: 'Define branch name'     
         required: true
-        default: 'master'
+        default: ''
 jobs:
   printInputs:
     runs-on: ubuntu-latest
