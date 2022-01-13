@@ -21,6 +21,7 @@ var (
 	zipkinHTTPEndpoint = "http://localhost:9411/api/v2/spans"
 )
 
+
 func init() {
 	reporter := httpReporter.NewReporter(zipkinHTTPEndpoint)
 	ze, err := zipkin.NewEndpoint("go-kit-example", "localhost:8090")
